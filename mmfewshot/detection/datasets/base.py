@@ -540,6 +540,9 @@ class BaseFewShotDataset(CustomDataset):
                 table_data.append(row_data)
                 row_data = []
 
+        if row_data is not None:
+                table_data.append(row_data)
+
         table = AsciiTable(table_data)
         result += table.table
         return result

@@ -18,7 +18,8 @@ DIOR_SPLIT = dict(
     ALL_CLASSES_SPLIT1=('airplane', 'airport', 'Expressway-toll-station', 'harbor', 'groundtrackfield',
                         'dam', 'golffield', 'storagetank', 'tenniscourt', 'vehicle',
                         'Expressway-Service-area', 'overpass', 'stadium', 'trainstation', 'windmill',
-                        'baseballfield', 'basketballcourt', 'bridge','chimney', 'ship'),
+                        'baseballfield', 'basketballcourt', 'helicopter','roundabout', 'swimmingpool', 
+                        'ship', 'largevehicle', 'soccerballfield'),
     ALL_CLASSES_SPLIT2=('baseballfield', 'basketballcourt', 'bridge','chimney', 'ship',
                         'dam', 'golffield', 'storagetank', 'tenniscourt', 'vehicle',
                         'Expressway-Service-area', 'overpass', 'stadium', 'trainstation', 'windmill',    
@@ -33,7 +34,8 @@ DIOR_SPLIT = dict(
                         'Expressway-Service-area', 'overpass', 'stadium', 'trainstation', 'windmill'),
 
 
-    NOVEL_CLASSES_SPLIT1=('baseballfield', 'basketballcourt', 'bridge','chimney', 'ship'),
+    NOVEL_CLASSES_SPLIT1=('baseballfield', 'basketballcourt', 'helicopter','roundabout', 'swimmingpool', 
+                            'ship', 'largevehicle', 'soccerballfield'),
     NOVEL_CLASSES_SPLIT2=('airplane', 'airport', 'Expressway-toll-station', 'harbor', 'groundtrackfield'),
     NOVEL_CLASSES_SPLIT3=('dam', 'golffield', 'storagetank', 'tenniscourt', 'vehicle'),
     NOVEL_CLASSES_SPLIT4=('Expressway-Service-area', 'overpass', 'stadium', 'trainstation', 'windmill'),
@@ -423,7 +425,7 @@ class FewShotDIORDataset(BaseFewShotDataset):
                  metric: Union[str, List[str]] = 'mAP',
                  logger: Optional[object] = None,
                  proposal_nums: Sequence[int] = (100, 300, 1000),
-                 iou_thr: Optional[Union[float, Sequence[float]]] = 0.5,
+                 iou_thr: Optional[Union[float, Sequence[float]]] = 0.45,
                  class_splits: Optional[List[str]] = None) :
         """Evaluation in VOC protocol and summary results of different splits
         of classes.
@@ -493,10 +495,11 @@ class FewShotDIORDataset(BaseFewShotDataset):
                 # calculate evaluate results of different class splits
                 if class_splits is not None:
                     for k in class_splits.keys():
+                        # ------------- MODIFICA PER FILTRARE CLASSI CON NUM_GTS > 0 --------------
                         aps = [
                             cls_results['ap']
                             for i, cls_results in enumerate(ap_results)
-                            if self.CLASSES[i] in class_splits[k]
+                            if self.CLASSES[i] in class_splits[k] and cls_results['num_gts'] > 0
                         ]
                         class_splits_mean_ap = np.array(aps).mean().item()
                         class_splits_mean_aps[k].append(class_splits_mean_ap)

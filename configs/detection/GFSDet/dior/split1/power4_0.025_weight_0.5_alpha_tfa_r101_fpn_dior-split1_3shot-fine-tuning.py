@@ -34,13 +34,13 @@ model = dict(
     roi_head=dict(
         bbox_head=dict(
             type='DisKDBBoxHead',
-            num_classes=20,
+            num_classes=23,
             loss_kd_weight= 0.025,
             base_alpha=0.5,
             loss_bbox=dict(loss_weight=2.0),
             loss_cls=dict(loss_weight=1.0),
             dis_loss=dict(
-                type='DisLoss', num_classes=20, shot=3, 
+                type='DisLoss', num_classes=23, shot=3, 
                 loss_base_margin_weight=1.0,
                 loss_novel_margin_weight=1.0,
                 loss_neg_margin_weight=1.0,
